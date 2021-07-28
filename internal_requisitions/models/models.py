@@ -9,6 +9,7 @@ class internal_requisitions(models.Model):
 
      #name = fields.Char(string="Title", required=True, help="Name of the Requisition")
      #description = fields.Text()
+     #
     
 
 
