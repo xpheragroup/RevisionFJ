@@ -710,8 +710,7 @@ class Picking(models.Model):
                     quantity_warehouse += qty_warehouse.quantity
             if quantity_warehouse < quantity_stock_picking:
                 if self.picking_type_id.name == 'Órdenes de Entrega':
-                    print("")
-                    #raise UserError(_('La cantidad disponible en el almacén no es suficiente para cumplir la demanda.'))
+                    raise UserError(_('La cantidad disponible en el almacén no es suficiente para cumplir la demanda.'))
 
         if not self.partner_id:
             products = {}
