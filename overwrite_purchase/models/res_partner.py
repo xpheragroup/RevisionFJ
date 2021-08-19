@@ -1,6 +1,7 @@
 import re
-from odoo import api, models, _
+from odoo import api, models, fields, _
 from odoo.exceptions import UserError
+from datetime import datetime
 
 EMAIL_REGEX = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})*(\.\w{2,3})+$'
 PHONE_REGEX = '^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$'
@@ -36,6 +37,109 @@ def validation_mobile(mobile):
 
 class Partner(models.Model):
     _inherit = 'res.partner'
+
+    user_update_rut = fields.Many2one('res.users', string='Modificó RUT', required=False, copy=False)
+    date_update_rut = fields.Datetime(string='Fecha Modificó RUT', copy=False)
+    user_update_camara = fields.Many2one('res.users', string='Modificó Cámara de Comercio', required=False, copy=False)
+    date_update_camara = fields.Datetime(string='Fecha Modificó Cámara de Comercio', copy=False)
+    user_update_cedula_representante = fields.Many2one('res.users', string='Modificó Cédula Representante Legal', required=False, copy=False)
+    date_update_cedula_representante = fields.Datetime(string='Fecha Modificó Cédula Representante Legal', copy=False)
+    user_update_bancaria = fields.Many2one('res.users', string='Modificó Certificación Bancaria', required=False, copy=False)
+    date_update_bancaria = fields.Datetime(string='Fecha Modificó Certificación Bancaria', copy=False)
+
+    user_update_adj_1 = fields.Many2one('res.users', string='Modificó Adjunto 1', required=False, copy=False)
+    date_update_adj_1 = fields.Datetime(string='Fecha Modificó Adjunto 1', copy=False)
+    user_update_adj_2 = fields.Many2one('res.users', string='Modificó Adjunto 2', required=False, copy=False)
+    date_update_adj_2 = fields.Datetime(string='Fecha Modificó Adjunto 2', copy=False)
+    user_update_adj_3 = fields.Many2one('res.users', string='Modificó Adjunto 3', required=False, copy=False)
+    date_update_adj_3 = fields.Datetime(string='Fecha Modificó Adjunto 3', copy=False)
+    user_update_adj_4 = fields.Many2one('res.users', string='Modificó Adjunto 4', required=False, copy=False)
+    date_update_adj_4 = fields.Datetime(string='Fecha Modificó Adjunto 4', copy=False)
+    user_update_adj_5 = fields.Many2one('res.users', string='Modificó Adjunto 5', required=False, copy=False)
+    date_update_adj_5 = fields.Datetime(string='Fecha Modificó Adjunto 5', copy=False)
+    user_update_adj_6 = fields.Many2one('res.users', string='Modificó Adjunto 6', required=False, copy=False)
+    date_update_adj_6 = fields.Datetime(string='Fecha Modificó Adjunto 6', copy=False)
+
+    rut = fields.Binary(string='RUT', copy=False, tracking=1, track_visibility='onchange')
+    rut_name = fields.Char("Normbre Documento RUT", tracking=1)
+    camara = fields.Binary(string='Cámara de Comercio', copy=False, tracking=1, track_visibility='onchange')
+    camara_name = fields.Char("Normbre Documento Cámara de Comercio", tracking=1)
+    cedula_representante = fields.Binary(string='Cédula Representante Legal', copy=False, tracking=1, track_visibility='onchange')
+    cedula_representante_name = fields.Char("Normbre Documento Cédula Representante Legal", tracking=1)
+    bancaria = fields.Binary(string='Certificación Bancaria', copy=False, tracking=1, track_visibility='onchange')
+    bancaria_name = fields.Char("Normbre Documento Certificación Bancaria", tracking=1)
+
+    adj_1 = fields.Binary(string='Adjunto 1', copy=False, tracking=1, track_visibility='onchange')
+    adj_1_name = fields.Char("Normbre Documento Adjunto 1", tracking=1)
+    adj_2 = fields.Binary(string='Adjunto 2', copy=False, tracking=1, track_visibility='onchange')
+    adj_2_name = fields.Char("Normbre Documento Adjunto 2", tracking=1)
+    adj_3 = fields.Binary(string='Adjunto 3', copy=False, tracking=1, track_visibility='onchange')
+    adj_3_name = fields.Char("Normbre Documento Adjunto 3", tracking=1)
+    adj_4 = fields.Binary(string='Adjunto 4', copy=False, tracking=1, track_visibility='onchange')
+    adj_4_name = fields.Char("Normbre Documento Adjunto 4", tracking=1)
+    adj_5 = fields.Binary(string='Adjunto 5', copy=False, tracking=1, track_visibility='onchange')
+    adj_5_name = fields.Char("Normbre Documento Adjunto 5", tracking=1)
+    adj_6 = fields.Binary(string='Adjunto 6', copy=False, tracking=1, track_visibility='onchange')
+    adj_6_name = fields.Char("Normbre Documento Adjunto 6", tracking=1)
+
+    aditional_fields = fields.Selection([
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+        ('5', '5'),
+        ('6', '6')], string='Archivos Adicionales',
+        copy=False)
+
+    @api.onchange('x_studio_rut')
+    def tracking_rut(self):
+        self.user_update_rut = self.env.uid
+        self.date_update_rut = datetime.now()
+
+    @api.onchange('x_studio_camara_de_comercio')
+    def tracking_camara(self):
+        self.user_update_camara = self.env.uid
+        self.date_update_camara = datetime.now()
+
+    @api.onchange('x_studio_cedula_representante_legal')
+    def tracking_cedula_representante(self):
+        self.user_update_cedula_representante = self.env.uid
+        self.date_update_cedula_representante = datetime.now()
+
+    @api.onchange('x_studio_certificacion_bancaria')
+    def tracking_bancaria(self):
+        self.user_update_bancaria = self.env.uid
+        self.date_update_bancaria = datetime.now()
+    
+    @api.onchange('adj_1')
+    def tracking_adj_1(self):
+        self.user_update_adj_1 = self.env.uid
+        self.date_update_adj_1 = datetime.now()
+    
+    @api.onchange('adj_2')
+    def tracking_adj_2(self):
+        self.user_update_adj_2 = self.env.uid
+        self.date_update_adj_2 = datetime.now()
+
+    @api.onchange('adj_3')
+    def tracking_adj_3(self):
+        self.user_update_adj_3 = self.env.uid
+        self.date_update_adj_3 = datetime.now()
+    
+    @api.onchange('adj_4')
+    def tracking_adj_4(self):
+        self.user_update_adj_4 = self.env.uid
+        self.date_update_adj_4 = datetime.now()
+
+    @api.onchange('adj_5')
+    def tracking_adj_5(self):
+        self.user_update_adj_5 = self.env.uid
+        self.date_update_adj_5 = datetime.now()
+    
+    @api.onchange('adj_6')
+    def tracking_adj_6(self):
+        self.user_update_adj_6 = self.env.uid
+        self.date_update_adj_6 = datetime.now()
 
     def check_name(self, vals):
         if vals.get('company_id', False):

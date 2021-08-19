@@ -79,17 +79,58 @@ class MrpProduction(models.Model):
 
     def to_draft(self):
         self._check_company()
+        move_raw_ids_aux = [[]]
+        number_line = 0
+        for line in self.move_raw_ids:
+            move_raw_ids_aux[number_line].append(line.name)
+            move_raw_ids_aux[number_line].append(line.fab_product)
+            move_raw_ids_aux[number_line].append(line.product_id)
+            move_raw_ids_aux[number_line].append(line.std_quantity)
+            move_raw_ids_aux[number_line].append(line.product_uom)
+            move_raw_ids_aux[number_line].append(line.product_uom_qty)
+            move_raw_ids_aux[number_line].append(line.location_id)
+            move_raw_ids_aux[number_line].append(line.location_dest_id)
+            move_raw_ids_aux[number_line].append(line.bom_line_id)
+            move_raw_ids_aux.append([])
+            number_line += 1
+
         for mrp in self:
             mrp.write({'state': 'draft'})
             (mrp.move_raw_ids | mrp.move_finished_ids).to_draft_production_stock_move()
             mrp.write({'user_rev': False})
             mrp.write({'user_apr': False})
+            mrp.write({'user_con': False})
             mrp.write({'date_rev': False})
             mrp.write({'date_apr': False})
-        self._onchange_move_raw()
+            mrp.write({'date_con': False})
+
+        move_raw_ids_aux.pop()
+
+        for move in move_raw_ids_aux:
+            vals_list={}
+            vals_list['name']=move[0]
+            vals_list['fab_product']=move[1]
+            vals_list['product_id']=move[2].id
+            vals_list['std_quantity']=move[3]
+            vals_list['product_uom']=move[4].id
+            vals_list['product_uom_qty']=move[5]
+            vals_list['location_id']=move[6].id
+            vals_list['location_dest_id']=move[7].id
+            vals_list['bom_line_id']=move[8].id
+            self.move_raw_ids += self.env['stock.move'].new(vals_list)
+        
         return True
     
     def to_review(self):
+        '''if self.env['stock.move'].search([('origin', '=', self.name)]):
+            for move in self.env['stock.move'].search([('origin', '=', self.name)]):
+                #print("")
+                #print(move.name)
+                #print(move.id)
+                #print("")
+                move.write({'state': 'draft'})
+                move.unlink()'''
+
         self._check_company()
         for mrp in self:
             mrp.write({'state': 'review'})
@@ -259,4 +300,8 @@ class MrpProductProduce(models.TransientModel):
         for mrp in self.production_id:
             mrp.write({'user_ter': self.env.uid})
             mrp.write({'date_ter': datetime.datetime.now()})
+
+            mrp.button_mark_done()
+
         return {'type': 'ir.actions.act_window_close'}
+

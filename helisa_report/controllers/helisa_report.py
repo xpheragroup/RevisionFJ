@@ -39,21 +39,27 @@ class Binary(http.Controller):
         self._next_row()
 
     def _write_sheet(self, account_moves):
-        header_row = ['DOCUMENTO', 'FECHA', 'NIT', 'VALOR', 'NATURALEZA',
-                      'CENTRO DE COSTO', 'CUENTA', 'No DOCUMENTO', 'DETALLE']
+        header_row = ['DOCUMENTO', 'No DOCUMENTO', 'NÚMERO DE FACTURA', 'FECHA', 'TIPO DOCUMENTO', 
+                      'IDENTIFICACIÓN', 'CUENTA', 'NOMBRE DE LA CUENTA', 'VALOR', 'NATURALEZA', 
+                      'CENTRO DE COSTO', 'DETALLE', 'MONTO LIBRE DE IMPUESTOS', 'VALOR TOTAL FACTURA']
         self._add_row(header_row)
         for account_move in account_moves:
-            for invoice_line in account_move.invoice_line_ids:
+            for invoice_line in account_move.line_ids:
                 self._add_row([
                     'FC',
+                    account_move.name,
+                    account_move.ref,
                     account_move.invoice_date or '',
+                    account_move.partner_id.x_studio_tipo_de_documento or '',
                     account_move.partner_id.vat or '',
+                    invoice_line.account_id.code,
+                    invoice_line.account_id.name,
                     invoice_line.debit if invoice_line.debit > 0 else invoice_line.credit,
                     'D' if invoice_line.debit > 0 else 'C',
                     invoice_line.analytic_account_id.name or '',
-                    invoice_line.account_id.code,
-                    account_move.name,
-                    invoice_line.name
+                    invoice_line.name or '',
+                    account_move.amount_untaxed,
+                    account_move.amount_total
                 ])
 
     @http.route('/web/binary/helisa_report', type='http', auth="public")

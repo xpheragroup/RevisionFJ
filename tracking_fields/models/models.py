@@ -250,9 +250,9 @@ class ProductionOver(models.Model):
                             mods += 1
                             if 'virtual' in str(component[1]):
                                 message += '<li>Se agrega el producto {}.</li>'.format(component[2]['name'])
-                            elif component[2].get('product_uom_qty') is not None:
-                                move = self.env['stock.move'].search([['id', '=', component[1]]])
-                                message += '<li>Se modifica la cantidad a usar del producto {}. De {} a {}.</li>'.format(move.product_tmpl_id.name, move.product_uom_qty, component[2]['product_uom_qty'])
+                            #elif component[2].get('product_uom_qty') is not None:
+                            #    move = self.env['stock.move'].search([['id', '=', component[1]]])
+                            #    message += '<li>Se modifica la cantidad a usar del producto {}. De {} a {}.</li>'.format(move.product_tmpl_id.name, move.product_uom_qty, component[2]['product_uom_qty'])
                 message += '</ul>'
                 if mods > 0:
                     self.message_post(body=message)

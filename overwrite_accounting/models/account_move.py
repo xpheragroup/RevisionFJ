@@ -2,9 +2,9 @@ from odoo import models, fields
 
 
 # Import float compare credit note
-from openerp.tools.translate import _
+#from openerp.tools.translate import _
 from odoo.exceptions import RedirectWarning, UserError, ValidationError, AccessError
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.tools import float_compare
 from re import search
 import datetime
@@ -76,8 +76,7 @@ class CreditNote(models.Model):
                 reversal_of = self.ref[14:]
                 limit_credit_note = self.env['account.move'].search([('name','=',reversal_of)])
                 if self.amount_total > limit_credit_note.amount_total:
-                    print("")
-                    #raise UserError(_("El valor de la nota credito no puede ser mayor al valor de la factura."))
+                    raise UserError(_("El valor de la nota credito no puede ser mayor al valor de la factura."))
         if self.filtered(lambda x: x.journal_id.post_at == 'bank_rec').mapped('line_ids.payment_id').filtered(lambda x: x.state != 'reconciled'):
             raise UserError(_("A payment journal entry generated in a journal configured to post entries only when payments are reconciled with a bank statement cannot be manually posted. Those will be posted automatically after performing the bank reconciliation."))
         if self.env.context.get('default_type'):

@@ -39,10 +39,11 @@ class InternalOrder(models.Model):
 
      def action_confirm(self):
           if self.partner_shipping_id:
-               if self.date_order.date() >= self.partner_shipping_id.actual_date_end:
-                    while self.date_order.date() >= self.partner_shipping_id.actual_date_end:
-                         self.partner_shipping_id.periodos_transcurridos += 1
-                         self.partner_shipping_id.ordenes = None
+               if self.partner_shipping_id.actual_date_end:
+                    if self.date_order.date() >= self.partner_shipping_id.actual_date_end:
+                         while self.date_order.date() >= self.partner_shipping_id.actual_date_end:
+                              self.partner_shipping_id.periodos_transcurridos += 1
+                              self.partner_shipping_id.ordenes = None
 
                gasto_adicional = self.partner_shipping_id.gasto_periodo + (self.partner_shipping_id.last_approved_order - self.partner_shipping_id.last_invoiced_order) + self.amount_total
                if self.partner_shipping_id.presupuesto < gasto_adicional:

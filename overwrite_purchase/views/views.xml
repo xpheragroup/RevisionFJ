@@ -43,6 +43,7 @@
                     <header>
                         <button name="button_confirm" type="object" states="draft" id="draft_confirm" string="Confirmar obsequio"/>
                         <button name="button_draft" states="cancel" string="A borrador" type="object" />
+                        <button name="button_approve" type="object" states="to approve" string="Aprobar Ingreso" class="oe_highlight" groups="purchase.group_purchase_manager"/>
                         <button name="button_cancel" states="draft,to approve,sent,purchase" string="Cancelar" type="object" />
                     </header>
                     <sheet>
@@ -140,8 +141,7 @@
                                                     <field name="product_id"
                                                         context="{'partner_id': parent.partner_id}"
                                                         widget="many2one_barcode"
-                                                        domain="[('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
-                                                    />
+                                                        domain="[('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>
                                                     <label for="product_qty"/>
                                                     <div class="o_row">
                                                         <field name="product_qty"/>
@@ -289,5 +289,77 @@
                 </form>
             </field>
         </record>
+
+        <record model="ir.ui.view" id="res_partner_tracking_document">
+            <field name="name">res.partner.tracking.document</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <notebook>
+                    <page string="Trazabilidad y Documentos Adicionales">
+                        <group string="Trazabilidad">
+                            <group>
+                                <field name="rut" widget="binary" filename="rut_name" invisible="1"/>
+                                <field name="rut_name" invisible="1"/>
+                                <field name="user_update_rut"/>
+                                <field name="date_update_rut"/>
+                                <field name="camara" widget="binary" filename="camara_name" invisible="1"/>
+                                <field name="camara_name" invisible="1"/>
+                                <field name="user_update_camara"/>
+                                <field name="date_update_camara"/>
+                            </group>
+                            <group>
+                                <field name="cedula_representante" widget="binary" filename="cedula_representante_name" invisible="1"/>
+                                <field name="cedula_representante_name" invisible="1"/>
+                                <field name="user_update_cedula_representante"/>
+                                <field name="date_update_cedula_representante"/>
+                                <field name="bancaria" widget="binary" filename="bancaria_name" invisible="1"/>
+                                <field name="bancaria_name" invisible="1"/>
+                                <field name="user_update_bancaria"/>
+                                <field name="date_update_bancaria"/>
+                            </group>
+                        </group>
+
+                        <group string="Documentación Adicional">
+                            <group>
+                                <field name="aditional_fields"/>
+                            </group>
+                            <group>
+                                <field name="aditional_fields" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="adj_1" widget="binary" filename="adj_1_name" attrs="{'invisible':[('aditional_fields','!=','1'),('aditional_fields','!=','2'),('aditional_fields','!=','3'),('aditional_fields','!=','4'),('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                                <field name="adj_1_name" invisible="1"/>
+                                <field name="user_update_adj_1" attrs="{'invisible':[('aditional_fields','!=','1'),('aditional_fields','!=','2'),('aditional_fields','!=','3'),('aditional_fields','!=','4'),('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                                <field name="date_update_adj_1" attrs="{'invisible':[('aditional_fields','!=','1'),('aditional_fields','!=','2'),('aditional_fields','!=','3'),('aditional_fields','!=','4'),('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                                <field name="adj_2" widget="binary" filename="adj_2_name" attrs="{'invisible':[('aditional_fields','!=','2'),('aditional_fields','!=','3'),('aditional_fields','!=','4'),('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                                <field name="adj_2_name" invisible="1"/>
+                                <field name="user_update_adj_2" attrs="{'invisible':[('aditional_fields','!=','2'),('aditional_fields','!=','3'),('aditional_fields','!=','4'),('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                                <field name="date_update_adj_2" attrs="{'invisible':[('aditional_fields','!=','2'),('aditional_fields','!=','3'),('aditional_fields','!=','4'),('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                                <field name="adj_3" widget="binary" filename="adj_3_name" attrs="{'invisible':[('aditional_fields','!=','3'),('aditional_fields','!=','4'),('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                                <field name="adj_3_name" invisible="1"/>
+                                <field name="user_update_adj_3" attrs="{'invisible':[('aditional_fields','!=','3'),('aditional_fields','!=','4'),('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                                <field name="date_update_adj_3" attrs="{'invisible':[('aditional_fields','!=','3'),('aditional_fields','!=','4'),('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                            </group>
+                            <group>
+                                <field name="adj_4" widget="binary" filename="adj_4_name" attrs="{'invisible':[('aditional_fields','!=','4'),('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                                <field name="adj_4_name" invisible="1"/>
+                                <field name="user_update_adj_4" attrs="{'invisible':[('aditional_fields','!=','4'),('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                                <field name="date_update_adj_4" attrs="{'invisible':[('aditional_fields','!=','4'),('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                                <field name="adj_5" widget="binary" filename="adj_5_name" attrs="{'invisible':[('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                                <field name="adj_5_name" invisible="1"/>
+                                <field name="user_update_adj_5" attrs="{'invisible':[('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                                <field name="date_update_adj_5" attrs="{'invisible':[('aditional_fields','!=','5'),('aditional_fields','!=','6')]}"/>
+                                <field name="adj_6" widget="binary" filename="adj_6_name" attrs="{'invisible':[('aditional_fields','!=','6')]}"/>
+                                <field name="adj_6_name" invisible="1"/>
+                                <field name="user_update_adj_6" attrs="{'invisible':[('aditional_fields','!=','6')]}"/>
+                                <field name="date_update_adj_6" attrs="{'invisible':[('aditional_fields','!=','6')]}"/>
+                            </group>    
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
     </data>
 </odoo>
